@@ -1,0 +1,12 @@
+version: '3'
+
+services:
+    php-test:
+        image: elitonluiz1989/php
+
+        container_name: php-test
+        networks:
+            - php-test.backend
+
+networks:
+    php-test.backend:
