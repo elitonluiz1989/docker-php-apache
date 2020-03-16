@@ -1,18 +1,18 @@
-FROM php:7.4.3-fpm-alpine
+FROM php:apache
 
 LABEL maintainer="elitonluiz1989@gmail.com"
 LABEL version="1.0.0"
 
-RUN apk update; \
-    apk upgrade; \
-    apk add --no-cache bash;
+RUN apt update; \
+    apt upgrade;
 
 # install extensions
 # intl, zip, soap
-RUN apk add --update --no-cache libzip-dev \
-    libintl \
-    icu \
-    icu-dev \
+RUN apt install -y --no-install-recommends \
+    libzip-dev \
+    libc6-dev \
+    libicu63 \
+    libicu-dev\
     libxml2-dev \
     && docker-php-ext-install intl zip
 
@@ -20,9 +20,9 @@ RUN apk add --update --no-cache libzip-dev \
 RUN docker-php-ext-install mysqli pdo pdo_mysql
 
 # mcrypt, gd, iconv
-RUN apk add --update --no-cache \
-        freetype-dev \
-        libjpeg-turbo-dev \
+RUN apt install -y --no-install-recommends \
+        libfreetype6-dev \
+        libjpeg62-turbo-dev \
         libpng-dev \
     && docker-php-ext-install -j"$(getconf _NPROCESSORS_ONLN)" iconv \
     && docker-php-ext-configure gd --with-freetype --with-jpeg \
@@ -30,15 +30,8 @@ RUN apk add --update --no-cache \
 
 # xdebug
 RUN docker-php-source extract \
-    && apk add --no-cache --virtual .phpize-deps-configure $PHPIZE_DEPS \
     && pecl install xdebug \
     && docker-php-ext-enable xdebug \
-    && apk del .phpize-deps-configure \
     && docker-php-source delete
 
-
-RUN sed -i -e 's/listen.*/listen = 0.0.0.0:9000/' /usr/local/etc/php-fpm.conf
-
-RUN echo "expose_php=0" > /usr/local/etc/php/php.ini
-
-CMD ["php-fpm"]
+CMD ["apachectl", "-D", "FOREGROUND"]
