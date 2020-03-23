@@ -41,4 +41,7 @@ RUN echo 'ServerName 127.0.0.1' >> /etc/apache2/conf-available/servername.conf
 RUN a2enmod rewrite
 RUN a2enconf servername.conf
 
+# Adding composer
+RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/bin --filename=composer 
+
 CMD ["apachectl", "-D", "FOREGROUND"]
