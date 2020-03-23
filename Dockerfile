@@ -9,6 +9,8 @@ RUN apt update; \
 # install extensions
 # intl, zip, soap
 RUN apt install -y --no-install-recommends \
+    curl \
+    wget \
     libzip-dev \
     libc6-dev \
     libicu63 \
@@ -33,5 +35,10 @@ RUN docker-php-source extract \
     && pecl install xdebug \
     && docker-php-ext-enable xdebug \
     && docker-php-source delete
+
+RUN echo 'ServerName 127.0.0.1' >> /etc/apache2/conf-available/servername.conf
+
+RUN a2enmod rewrite
+RUN a2enconf servername.conf
 
 CMD ["apachectl", "-D", "FOREGROUND"]
