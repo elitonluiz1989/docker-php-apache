@@ -44,4 +44,8 @@ RUN a2enconf servername.conf
 # Adding composer
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/bin --filename=composer 
 
+# Adding option of wait other container
+ADD https://raw.githubusercontent.com/vishnubob/wait-for-it/master/wait-for-it.sh /usr/bin/wait-for-it
+RUN chmod +x /usr/bin/wait-for-it
+
 CMD ["apachectl", "-D", "FOREGROUND"]
