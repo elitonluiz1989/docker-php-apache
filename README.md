@@ -1,2 +1,2 @@
-# docker-php
-Docker PHP image repository
+# docker-php-apache
+Docker image of PHP with Apache
